@@ -1,0 +1,21 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const telInputs = document.querySelectorAll("input[type='tel']");
+
+  telInputs.forEach((input) => {
+    input.addEventListener("focus", function () {
+      // Adiciona +55 se o campo estiver vazio ou não começar com +55
+      if (!input.value.startsWith("+55")) {
+        input.value = "+55";
+      }
+    });
+
+    input.addEventListener("input", function () {
+      // Garante que o +55 permaneça no início
+      if (!input.value.startsWith("+55")) {
+        input.value = "+55" + input.value.replace(/^\+?55/, '').replace(/[^\d]/g, '');
+      }
+    });
+  });
+});
+</script>
