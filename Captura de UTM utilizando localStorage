@@ -1,0 +1,40 @@
+<script>
+(function () {
+
+    const params = new URLSearchParams(window.location.search);
+    const utmKeys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+    let utms = {};
+
+    // Captura UTMs da URL
+    utmKeys.forEach(key => {
+        const value = params.get(key);
+        if (value) utms[key] = value;
+    });
+
+    // Se existir UTM na URL, atualiza
+    if (Object.keys(utms).length) {
+        const utmString = Object.entries(utms)
+            .map(([k,v]) => `${k}: ${v}`)
+            .join(' | ');
+
+        localStorage.setItem('utm_data', utmString);
+        document.cookie = `utm_data=${encodeURIComponent(utmString)}; path=/; max-age=2592000`;
+    }
+
+    // Preenche o formulário Elementor
+    document.addEventListener('DOMContentLoaded', function () {
+        const utmData =
+            decodeURIComponent(
+                document.cookie.match(/utm_data=([^;]+)/)?.[1] ||
+                localStorage.getItem('utm_data') ||
+                ''
+            );
+
+        if (!utmData) return;
+
+        const fields = document.querySelectorAll('input[name="form_fields[utm_data]"]');
+        fields.forEach(field => field.value = utmData);
+    });
+
+})();
+</script>
